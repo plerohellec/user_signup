@@ -1,0 +1,16 @@
+# We'll use mysql
+development:
+  adapter: mysql2
+  database: user_signup_dev
+  username: yammer
+  password: yammer
+  host: localhost
+
+test:
+  adapter: mysql2
+  database: user_signup_test
+  username: yammer
+  password: yammer
+  host: localhost
+
+

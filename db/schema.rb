@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(:version => 20110624004448) do
     t.datetime "updated_at"
   end
 
+  add_index "jobs", ["user_id"], :name => "index_jobs_on_user_id"
+
   create_table "users", :force => true do |t|
     t.string   "email"
     t.string   "first_name"
@@ -29,8 +31,12 @@ ActiveRecord::Schema.define(:version => 20110624004448) do
     t.string   "hashed_password"
     t.date     "birth_date"
     t.string   "location"
+    t.string   "uuid"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["uuid"], :name => "index_users_on_uuid", :unique => true
 
 end

@@ -1,7 +1,11 @@
 UserSignup::Application.routes.draw do
-  resources :jobs
 
+  resources :jobs
   resources :users
+
+  # Named routes for signup and signin
+  match 'signup' => 'users#new'
+  match 'signin' => 'users#signin'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

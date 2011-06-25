@@ -5,11 +5,15 @@ class CreateUsers < ActiveRecord::Migration
       t.string :first_name
       t.string :last_name
       t.string :hashed_password
-      t.date :birth_date
+      t.date   :birth_date
       t.string :location
+      t.string :uuid # used for signup URL
 
       t.timestamps
     end
+
+    add_index :users,  :email, :unique => true
+    add_index :users,  :uuid,  :unique => true
 
     create_table :jobs do |t|
       t.integer :user_id
@@ -20,6 +24,8 @@ class CreateUsers < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :jobs, :user_id
   end
 
   def self.down

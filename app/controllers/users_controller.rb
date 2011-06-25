@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   # Empty home page
   # It will only show the layout
   def home
+    logger.debug "home page requested"
   end
 
   # GET /users/1
@@ -23,10 +24,20 @@ class UsersController < ApplicationController
     # It will be used to lookup the user when he clicks on the link.
     @user.generate_uuid
 
-    if @user.save
-      flash[:notice] = "An email was sent to #{params[:email]} " +
-                             "with registration information."
-      redirect_to '/'
+    # start a transaction to be able to rollback the user creation in case
+    # the email sending failed.
+    res = false
+    User.transaction do
+      res = @user.save
+      res &&= @user.send_confirmation_email if res
+
+      raise ActiveRecord::Rollback unless res
+    end
+
+    if res
+        flash[:notice] = "An email was sent to #{params[:email]} " +
+                              "with registration information."
+        redirect_to '/'
     else
       flash[:error] = "Registration failed."
       render :action => :new

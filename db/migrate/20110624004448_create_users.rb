@@ -1,13 +1,13 @@
 class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
-      t.string :email
+      t.string :email,            :null => false
       t.string :first_name
       t.string :last_name
       t.string :hashed_password
       t.date   :birth_date
       t.string :location
-      t.string :uuid # used for signup URL
+      t.string :uuid,             :null => false  # used for signup URL
 
       t.timestamps
     end
@@ -16,7 +16,7 @@ class CreateUsers < ActiveRecord::Migration
     add_index :users,  :uuid,  :unique => true
 
     create_table :jobs do |t|
-      t.integer :user_id
+      t.integer :user_id,     :null => false
       t.string :title
       t.string :company_name
       t.date :joined_at

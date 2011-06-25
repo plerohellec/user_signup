@@ -13,6 +13,7 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
+    @title = "User Sign Up"
     @user = User.new
   end
 
@@ -40,6 +41,7 @@ class UsersController < ApplicationController
         redirect_to '/'
     else
       flash[:error] = "Registration failed."
+      @title = "User Sign Up"
       render :action => :new
     end
 
@@ -47,6 +49,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    @title = "User Edit"
     @user = User.find(params[:id])
   end
 

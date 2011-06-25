@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>UserSignup</title>
+  <title><%= @title %></title>
   <%= stylesheet_link_tag :all %>
   <%= javascript_include_tag :defaults %>
   <%= csrf_meta_tag %>
@@ -23,12 +23,12 @@
 
 <%= yield %>
 
-<br>
-  <ul style='display:inline; margin:0; padding:0;'>
-    <li style='display:inline;'><a href='/'>Home</a></li>
-    <li style='display:inline;'><a href='/signup'>Sign up</a></li>
-    <li style='display:inline;'><a href='/signin'>Sign in</a></li>
-  </ul>
+<br><br>
+<ul style='display:inline; margin:0; padding:0;'>
+  <li style='display:inline;'><%= link_to 'Home', root_path %></li>
+  <li style='display:inline;'><%= link_to 'Sign up', signup_path %></li>
+  <li style='display:inline;'><%= link_to 'Sign in', signin_path %></li>
+</ul>
 
 
 </body>

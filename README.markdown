@@ -27,3 +27,17 @@ From the shell:
 rake db:create:all
 rake db:migrate
 ```
+
+## Design considerations
+### Using sendmail/postfix to send confirmation email
+This application relies on a local Sendmail or Postfix server to deliver emails.
+The alternative would have been to use ActiveMailer.
+Pros:
+* faster, everything is done locally, all network IO is done asynchronously
+by the Postfix server after the messages are queued
+* simple
+Cons:
+* less portable
+* little information is returned to the caller about the result of the operation.
+
+### Authentication

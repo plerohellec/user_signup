@@ -3,10 +3,11 @@ class User < ActiveRecord::Base
   has_many :jobs
 
   # email address regex borrowed from http://www.regular-expressions.info/regexbuddy/email.html
-  validates_format_of :email, :with => /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+  validates :email, :format => { :with => /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i },
+                    :presence => true,
+                    :uniqueness => true
 
-  validates_uniqueness_of :email
-  validates_presence_of :uuid
+  validates :uuid,  :presence => true
 
   # Random string to be use in email signup url
   def generate_uuid

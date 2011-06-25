@@ -1,5 +1,10 @@
 class UsersController < ApplicationController
 
+  # Empty home page
+  # It will only show the layout
+  def home
+  end
+
   # GET /users/1
   def show
     @user = User.find(params[:id])
@@ -14,9 +19,14 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
 
+    # We need to generate and save the uuid that will be inserted into the URL.
+    # It will be used to lookup the user when he clicks on the link.
+    @user.generate_uuid
+
     if @user.save
-      redirect_to(:action => :new,
-                  :notice => "An email was sent to #{params[:email]} with registration information.")
+      flash[:notice] = "An email was sent to #{params[:email]} " +
+                             "with registration information."
+      redirect_to '/'
     else
       flash[:error] = "Registration failed."
       render :action => :new

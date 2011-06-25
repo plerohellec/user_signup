@@ -7,6 +7,8 @@ UserSignup::Application.routes.draw do
   match 'signup' => 'users#new'
   match 'signin' => 'users#signin'
 
+  root :to => 'users#home'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

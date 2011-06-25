@@ -9,6 +9,18 @@
 <body>
 <h1>User Signup Application</h1>
 
+<% if flash[:error] %>
+    <div id="flash_error">
+    <p style="color:red;"><%= flash[:error] %></p>
+    </div>
+<% end %>
+<% if flash[:notice] %>
+    <div id="flash_notice">
+    <p style="color:green;"><%= flash[:notice] %></p>
+    </div>
+<% end %>
+
+
 <%= yield %>
 
 <br>

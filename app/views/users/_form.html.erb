@@ -1,4 +1,5 @@
-<%= form_for(@user) do |f| %>
+<%= form_for(@user) do |user_form| %>
+
   <% if @user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
@@ -11,31 +12,35 @@
     </div>
   <% end %>
 
+<h3>Personal Information</h3>
   <div class="field">
-    <%= f.label :email %><br />
-    <%= f.text_field :email %>
+    <%= user_form.label :first_name %><br />
+    <%= user_form.text_field :first_name %>
   </div>
   <div class="field">
-    <%= f.label :first_name %><br />
-    <%= f.text_field :first_name %>
+    <%= user_form.label :last_name %><br />
+    <%= user_form.text_field :last_name %>
   </div>
   <div class="field">
-    <%= f.label :last_name %><br />
-    <%= f.text_field :last_name %>
+    <%= user_form.label :birth_date %><br />
+    <%= user_form.date_select :birth_date %>
   </div>
   <div class="field">
-    <%= f.label :hashed_password %><br />
-    <%= f.text_field :hashed_password %>
+    <%= user_form.label :location %><br />
+    <%= user_form.text_field :location %>
   </div>
-  <div class="field">
-    <%= f.label :birth_date %><br />
-    <%= f.date_select :birth_date %>
-  </div>
-  <div class="field">
-    <%= f.label :location %><br />
-    <%= f.text_field :location %>
-  </div>
+
+<h3>Job History</h3>
+  <%= user_form.fields_for :jobs, @jobs do |job_fields| %>
+    Title: <%= job_fields.text_field :title, :size => 12 %>
+    Company: <%= job_fields.text_field :company_name, :size => 12 %>
+    Start: <%= job_fields.date_select :joined_at %>
+    End: <%= job_fields.date_select :left_at %>
+    <br>
+  <% end %>
+
   <div class="actions">
-    <%= f.submit %>
+    <%= user_form.submit %>
   </div>
+
 <% end %>

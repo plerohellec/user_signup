@@ -27,14 +27,6 @@ describe UsersController do
     {}
   end
 
-  describe "GET index" do
-    it "assigns all users as @users" do
-      user = User.create! valid_attributes
-      get :index
-      assigns(:users).should eq([user])
-    end
-  end
-
   describe "GET show" do
     it "assigns the requested user as @user" do
       user = User.create! valid_attributes
@@ -136,21 +128,6 @@ describe UsersController do
         put :update, :id => user.id.to_s, :user => {}
         response.should render_template("edit")
       end
-    end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested user" do
-      user = User.create! valid_attributes
-      expect {
-        delete :destroy, :id => user.id.to_s
-      }.to change(User, :count).by(-1)
-    end
-
-    it "redirects to the users list" do
-      user = User.create! valid_attributes
-      delete :destroy, :id => user.id.to_s
-      response.should redirect_to(users_url)
     end
   end
 

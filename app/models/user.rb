@@ -1,13 +1,28 @@
+require 'digest'
+
 class User < ActiveRecord::Base
 
   has_many :jobs
+  accepts_nested_attributes_for :jobs,
+                  :reject_if => proc { |attributes| attributes['title'].blank? &&
+                                                    attributes['company_name'].blank? }
 
   # email address regex borrowed from http://www.regular-expressions.info/regexbuddy/email.html
   validates :email, :format => { :with => /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i },
                     :presence => true,
-                    :uniqueness => true
+                    :uniqueness => { :case_sensitive => false }
 
   validates :uuid,  :presence => true
+
+  validates :first_name, :presence => true, :on => :update
+  validates :last_name,  :presence => true, :on => :update
+  validates :password,   :confirmation => true
+
+  # need to create the hashed password out of the password
+  before_save :hash_password
+
+  # virtual attribute of the user
+  attr_accessor :password
 
   # Random string to be use in email signup url
   def generate_uuid
@@ -60,10 +75,22 @@ CONF_MAIL
     return $?==0
   end
 
+  # has the user been through step 2 already?
+  def is_registered?
+    # keep track of where we are: if no password in db
+    # it means we still are at the regustration step
+    (hashed_password_was && !hashed_password_was.empty?)
+  end
+
   protected
 
   def confirmation_url
     "http://#{HOSTNAME}/users/register?uuid=#{self.uuid}"
+  end
+
+  def hash_password
+    return unless password
+    self.hashed_password = Digest::SHA2.hexdigest(password)
   end
 
 end

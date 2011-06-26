@@ -4,7 +4,9 @@
 ### System
 This application has been setup and tested onUbuntu 11.04
 with RVM ruby 1.9.2.
+
 System package dependencies:
+
 * libmysqlclient-dev
 ### Gems
 * mysql2
@@ -23,6 +25,7 @@ grant all privileges on user_signup_test.* to 'yammer'@'localhost' identified by
 
 ### Database
 From the shell:
+
 ```
 rake db:create:all
 rake db:migrate

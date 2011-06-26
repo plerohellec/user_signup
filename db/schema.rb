@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(:version => 20110624004448) do
 
   create_table "jobs", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",      :null => false
     t.string   "title"
     t.string   "company_name"
     t.date     "joined_at"
@@ -25,13 +25,15 @@ ActiveRecord::Schema.define(:version => 20110624004448) do
   add_index "jobs", ["user_id"], :name => "index_jobs_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email"
+    t.string   "email",             :null => false
     t.string   "first_name"
     t.string   "last_name"
     t.string   "hashed_password"
     t.date     "birth_date"
     t.string   "location"
-    t.string   "uuid"
+    t.string   "uuid",              :null => false
+    t.string   "password_salt",     :null => false
+    t.string   "persistence_token", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

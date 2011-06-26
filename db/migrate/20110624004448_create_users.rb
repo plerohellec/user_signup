@@ -8,6 +8,8 @@ class CreateUsers < ActiveRecord::Migration
       t.date   :birth_date
       t.string :location
       t.string :uuid,             :null => false  # used for signup URL
+      t.string :password_salt,       :null => false
+      t.string :persistence_token,   :null => false
 
       t.timestamps
     end

@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
   # virtual attribute of the user
   attr_accessor :password
 
+  # plug authlogic in
+  acts_as_authentic do |c|
+  end
+
   # Random string to be use in email signup url
   def generate_uuid
     chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a

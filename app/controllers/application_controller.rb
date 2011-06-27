@@ -17,10 +17,39 @@ class ApplicationController < ActionController::Base
 
   def require_user
     unless current_user
+      store_location
       flash[:notice] = "You must be logged in to access this page"
       redirect_to new_user_session_url
       return false
     end
   end
 
+  def require_no_user
+    if current_user
+      flash[:notice] = "You must be logged out to access this page"
+      redirect_to root_path
+      return false
+    end
+  end
+
+  def store_location
+    session[:return_to] = request.request_uri
+  end
+
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
+
+  # Used in before_filter to make sure the logged in user
+  # can only view/modify his own profile
+  def check_authorization
+    # sanity check
+    raise "No current user in check_authorization filter??" unless current_user
+
+    if(params[:id].to_i != current_user.id)
+      flash[:error] = "You're not authorized for that URL"
+      redirect_to root_path, :status => 401
+    end
+  end
 end

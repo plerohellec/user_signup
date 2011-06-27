@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
 
+  before_filter :require_user, :only => [:edit, :update]
+  before_filter :require_no_user, :only => [:create, :register, :update_for_register]
+
+  before_filter :check_authorization, :only => [:edit, :update]
+
   # Empty home page
   # It will only show the layout
   def home
     logger.debug "home page requested"
-  end
-
-  # GET /users/1
-  def show
-    @user = User.find(params[:id])
   end
 
   # GET /users/new
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  # POST /users
+  # Step 1
   def create
     @user = User.new(params[:user])
 
@@ -47,21 +47,7 @@ class UsersController < ApplicationController
 
   end
 
-  # GET /users/1/edit
-  def edit
-    @title = "User Edit"
-    @user = User.find(params[:id])
-    @jobs = Job.where(:user_id => @user)
-
-    # There needs to be 7 jobs in the instance variable
-    # even if they're not all in the database.
-    @jobs.size.upto 6 do
-      logger.debug "job loop iteration"
-      @jobs << Job.new
-    end
-  end
-
-  # Step 2 of the user sign up
+  # Step 2: find user based on uuid
   def register
     @title = "Register"
     @user = User.find(:first,
@@ -80,32 +66,50 @@ class UsersController < ApplicationController
 
   end
 
-  # PUT /users/1
-  # PUT /users/1.xml
+  # Step 3 and user edit page at the same time
+  def edit
+    @title = "User Edit"
+    @user = User.find(params[:id])
+    @jobs = Job.where(:user_id => @user)
+
+    # There needs to be 7 jobs in the instance variable
+    # even if they're not all in the database.
+    @jobs.size.upto 6 do
+      logger.debug "job loop iteration"
+      @jobs << Job.new
+    end
+  end
+
+  # Step 2: save more info and create user session.
+  def update_for_register
+
+    @user = User.find(params[:id])
+    if @user.update_attributes(params[:user])
+
+      # create a session for the user
+      @user_session = UserSession.new(params[:user])
+
+      # failure would be unexpected here
+      raise "Cannot create user session" unless @user_session
+
+      redirect_to(edit_user_path, :notice => 'User was successfully updated.')
+    else
+      render :action => :register
+    end
+  end
+
+
+  # This is both for step 3 and user edit.
+  # Steps 3 and user edit are processed the same.
+  # Step 3: allow editing of the remaining attributes and job history.
   def update
     @user = User.find(params[:id])
 
     if @user.update_attributes(params[:user])
       redirect_to(edit_user_path, :notice => 'User was successfully updated.')
     else
-      # are we in step 2 or 3?
-      if(!@user.is_registered?)
-        render :action => :register
-      else
-        render :action => "edit"
-      end
+      render :action => "edit"
     end
   end
 
-  # DELETE /users/1
-  # DELETE /users/1.xml
-  def destroy
-    @user = User.find(params[:id])
-    @user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(users_url) }
-      format.xml  { head :ok }
-    end
-  end
 end

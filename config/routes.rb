@@ -4,12 +4,14 @@ UserSignup::Application.routes.draw do
   match 'signup' => 'users#new'
   match 'signin' => 'users#signin'
 
-  match 'users/register' => 'users#register', :via => :get
+  get 'users/register'
+  put 'users/update_for_register/:id' => 'users#update_for_register', :as => 'update_for_register'
 
   root :to => 'users#home'
 
-  resources :jobs
-  resources :users
+  resources :users, :except => [ :index, :show ]
+
+  resource :user_session, :only => [ :new, :create, :destroy ]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,5 +1,3 @@
-require 'digest'
-
 class User < ActiveRecord::Base
 
   has_many :jobs
@@ -12,20 +10,17 @@ class User < ActiveRecord::Base
                     :presence => true,
                     :uniqueness => { :case_sensitive => false }
 
-  validates :uuid,  :presence => true
+  validates :uuid,              :presence => true
+  validates :password_salt,     :presence => true, :if => :has_password?
+  validates :persistence_token, :presence => true, :if => :has_password?
 
-  validates :first_name, :presence => true, :on => :update
-  validates :last_name,  :presence => true, :on => :update
-  validates :password,   :confirmation => true
-
-  # need to create the hashed password out of the password
-  before_save :hash_password
-
-  # virtual attribute of the user
-  attr_accessor :password
+  validates :first_name, :presence => true, :on => :update_for_register
+  validates :last_name,  :presence => true, :on => :update_for_register
+  validates :password,   :confirmation => true, :on => :update_for_register
 
   # plug authlogic in
   acts_as_authentic do |c|
+    c.validate_password_field = false
   end
 
   # Random string to be use in email signup url
@@ -55,7 +50,7 @@ class User < ActiveRecord::Base
     logger.debug "Sending mail to #{self.email}"
 
     f.write <<CONF_MAIL;
-Date: #{Time.now}
+Date: #{Time.now.rfc822}
 Subject: User Signup App confirmation email
 To: #{self.email}
 From: #{EMAIL_SENDER}
@@ -82,19 +77,22 @@ CONF_MAIL
   # has the user been through step 2 already?
   def is_registered?
     # keep track of where we are: if no password in db
-    # it means we still are at the regustration step
-    (hashed_password_was && !hashed_password_was.empty?)
+    # it means we still are at the registration step
+
+    # Note that we use the "_was" suffix here (AR::Dirty) to check
+    # the value of the field before the update
+    !crypted_password_was.blank?
   end
 
-  protected
+  # for the validation
+  def has_password?
+    !self.crypted_password.blank?
+  end
+
+  private
 
   def confirmation_url
     "http://#{HOSTNAME}/users/register?uuid=#{self.uuid}"
-  end
-
-  def hash_password
-    return unless password
-    self.hashed_password = Digest::SHA2.hexdigest(password)
   end
 
 end

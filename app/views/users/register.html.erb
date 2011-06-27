@@ -2,7 +2,7 @@
 
 Welcome back <%= @user.email %>!<br><br>
 
-<%= form_for @user, :url => user_path(@user) do |f| %>
+<%= form_for @user, :url => update_for_register_path(@user) do |f| %>
 
   <% if @user.errors.any? %>
     <div id="error_explanation">

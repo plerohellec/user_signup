@@ -28,12 +28,12 @@ ActiveRecord::Schema.define(:version => 20110624004448) do
     t.string   "email",             :null => false
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "hashed_password"
+    t.string   "crypted_password"
     t.date     "birth_date"
     t.string   "location"
     t.string   "uuid",              :null => false
-    t.string   "password_salt",     :null => false
-    t.string   "persistence_token", :null => false
+    t.string   "password_salt"
+    t.string   "persistence_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

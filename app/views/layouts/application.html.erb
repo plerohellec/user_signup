@@ -9,6 +9,10 @@
 <body>
 <h1>User Signup Application</h1>
 
+<% if current_user %>
+<p>User currently logged in: <%= current_user.email %></p>
+<% end %>
+
 <% if flash[:error] %>
     <div id="flash_error">
     <p style="color:red;"><%= flash[:error] %></p>
@@ -26,9 +30,13 @@
 <br><br>
 <ul style='display:inline; margin:0; padding:0;'>
   <li style='display:inline;'><%= link_to 'Home', root_path %></li>
-  <li style='display:inline;'><%= link_to 'Sign up', signup_path %></li>
-  <li style='display:inline;'><%= link_to 'Sign in', new_user_session_path %></li>
-  <li style='display:inline;'><%= link_to 'Sign out', user_session_path, :method => :delete, :confirm => "Are you sure you want to logout?" %></li>
+  <% if !current_user %>
+    <li style='display:inline;'><%= link_to 'Sign up', signup_path %></li>
+    <li style='display:inline;'><%= link_to 'Sign in', new_user_session_path %></li>
+  <% else %>
+    <li style='display:inline;'><%= link_to 'Edit profile', edit_user_path(current_user) %></li>
+    <li style='display:inline;'><%= link_to 'Sign out', user_session_path, :method => :delete, :confirm => "Are you sure you want to logout?" %></li>
+  <%end %>
 </ul>
 
 

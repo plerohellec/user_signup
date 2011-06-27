@@ -6,11 +6,11 @@ class User < ActiveRecord::Base
                                                     attributes['company_name'].blank? }
 
   # email address regex borrowed from http://www.regular-expressions.info/regexbuddy/email.html
-  validates :email, :format => { :with => /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i },
-                    :presence => true,
-                    :uniqueness => { :case_sensitive => false }
+#   validates :email, :format => { :with => /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i },
+#                     :presence => true,
+#                     :uniqueness => { :case_sensitive => false }
 
-  validates :uuid,              :presence => true
+  validates_length_of     :uuid, :is => 16
   validates :password_salt,     :presence => true, :if => :has_password?
   validates :persistence_token, :presence => true, :if => :has_password?
 
@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   # Random string to be use in email signup url
   def generate_uuid
     chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-    self.uuid = (0..UUID_LEN).collect { chars[Kernel.rand(chars.length)] }.join
+    self.uuid = (0..UUID_LEN-1).collect { chars[Kernel.rand(chars.length)] }.join
   end
 
   # This methods relies on sendmail or postfix being setup on localhost
@@ -92,7 +92,7 @@ CONF_MAIL
   private
 
   def confirmation_url
-    "http://#{HOSTNAME}/users/register?uuid=#{self.uuid}"
+    "http://#{HOSTNAME}/users/register/#{self.uuid}"
   end
 
 end

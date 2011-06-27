@@ -3,6 +3,19 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user_session, :current_user
 
+  # authlogic opens a session as soon as the user is created
+  # even if he doesn't yet have a password.
+  # that's wrong, nuke it.
+  before_filter :no_password_no_session
+
+  def no_password_no_session
+    if current_user && current_user.crypted_password.blank?
+      logger.debug "destroying current session"
+      #@current_user_session.destroy
+      @current_user = nil
+    end
+  end
+
   private
 
   def current_user_session
@@ -49,7 +62,7 @@ class ApplicationController < ActionController::Base
 
     if(params[:id].to_i != current_user.id)
       flash[:error] = "You're not authorized for that URL"
-      redirect_to root_path, :status => 401
+      redirect_to root_path
     end
   end
 end

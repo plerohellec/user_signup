@@ -4,12 +4,12 @@ UserSignup::Application.routes.draw do
   match 'signup' => 'users#new'
   match 'signin' => 'users#signin'
 
-  get 'users/register'
+  get 'users/register/:uuid' => 'users#register'
   put 'users/update_for_register/:id' => 'users#update_for_register', :as => 'update_for_register'
 
   root :to => 'users#home'
 
-  resources :users, :except => [ :index, :show ]
+  resources :users, :except => [ :index, :show, :destroy ]
 
   resource :user_session, :only => [ :new, :create, :destroy ]
 

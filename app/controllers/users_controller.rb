@@ -25,6 +25,7 @@ class UsersController < ApplicationController
     # It will be used to lookup the user when he clicks on the link.
     @user.generate_uuid
 
+
     # start a transaction to be able to rollback the user creation in case
     # the email sending failed.
     res = false
@@ -54,30 +55,19 @@ class UsersController < ApplicationController
                       :conditions => { :uuid => params[:uuid] })
 
     if(!@user)
+      logger.debug "User not found for uuid #{params[:uuid]}"
       flash[:error] = "User not found."
       redirect_to root_path
-    end
-
-    # if the user is already registered, we should go straight to the 3rd step
-    if @user.is_registered?
-      redirect_to edit_user_path(@user)
       return
     end
 
-  end
-
-  # Step 3 and user edit page at the same time
-  def edit
-    @title = "User Edit"
-    @user = User.find(params[:id])
-    @jobs = Job.where(:user_id => @user)
-
-    # There needs to be 7 jobs in the instance variable
-    # even if they're not all in the database.
-    @jobs.size.upto 6 do
-      logger.debug "job loop iteration"
-      @jobs << Job.new
+    # if the user is already registered, we should ask the user to authenticate
+    if @user.is_registered?
+      flash[:notice] = "You're already registered. Please login."
+      redirect_to new_user_session_path
+      return
     end
+
   end
 
   # Step 2: save more info and create user session.
@@ -92,9 +82,25 @@ class UsersController < ApplicationController
       # failure would be unexpected here
       raise "Cannot create user session" unless @user_session
 
+      logger.debug "logged in #{@user.email}"
+
       redirect_to(edit_user_path, :notice => 'User was successfully updated.')
     else
+
       render :action => :register
+    end
+  end
+
+  # Step 3 and user edit page at the same time
+  def edit
+    @title = "User Edit"
+    @user = User.find(params[:id])
+    @jobs = Job.where(:user_id => @user)
+
+    # There needs to be 7 jobs in the instance variable
+    # even if they're not all in the database.
+    @jobs.size.upto 6 do
+      @jobs << Job.new
     end
   end
 

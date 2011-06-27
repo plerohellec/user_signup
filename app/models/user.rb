@@ -16,7 +16,8 @@ class User < ActiveRecord::Base
 
   validates :first_name, :presence => true, :on => :update_for_register
   validates :last_name,  :presence => true, :on => :update_for_register
-  validates :password,   :confirmation => true, :on => :update_for_register
+  validates :password,   :confirmation => true,
+                         :length => { :minimum => 6, :maximum => 20 }
 
   # plug authlogic in
   acts_as_authentic do |c|

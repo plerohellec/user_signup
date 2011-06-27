@@ -13,6 +13,7 @@ System package dependencies:
 * rspec-rails
 * factory-girl-rails
 * webrat
+* authlogic
 
 Run 'bundle install' to set them all up.
 
@@ -49,6 +50,18 @@ Cons:
 * little information is returned to the caller about the result of the operation.
 
 ### Authentication
+Using Authlogic gem for password and session management.
 
 ### Nested attributes
+
+## Tests
+Using rspec.
+
+My rspec skills are unfortuntely still weak, so I couldn't go too far.
+
+To run the tests
+
+```
+rake spec
+```
 

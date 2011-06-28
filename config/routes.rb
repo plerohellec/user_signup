@@ -4,7 +4,7 @@ UserSignup::Application.routes.draw do
   match 'signup' => 'users#new'
   match 'signin' => 'users#signin'
 
-  get 'users/register/:uuid' => 'users#register'
+  get 'users/register/:uuid' => 'users#register', :as => :register
   put 'users/update_for_register/:id' => 'users#update_for_register', :as => 'update_for_register'
 
   root :to => 'users#home'

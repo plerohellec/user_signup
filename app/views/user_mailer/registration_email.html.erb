@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+
+<p>Hi <%= @user.email %>,</p>
+<p>Thanks for signing up with 'User Signup App'.</p>
+<p>To confirm your registration, please click on the link below:
+&nbsp;<%= link_to "Confirmation link", @url %></p>
+
+<br>
+<p>'The User Signup App Team'</p>
+</body>
+</html>

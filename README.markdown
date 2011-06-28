@@ -2,7 +2,7 @@
 
 ## Dependencies
 ### System
-This application has been setup and tested onUbuntu 11.04
+This application has been setup and tested on Ubuntu 11.04
 with RVM ruby 1.9.2.
 
 System package dependencies:
@@ -40,14 +40,12 @@ The HOSTNAME config parameter MUST be updated for your environment. It's the hos
 
 ## Design considerations
 ### Using sendmail/postfix to send confirmation email
-This application relies on a local Sendmail or Postfix server to deliver emails.
-The alternative would have been to use ActiveMailer.
+The ActiveMailer configuration relies on a local Sendmail or Postfix server to deliver emails.
 
 Pros:
 
 * faster, everything is done locally, all network IO is done asynchronously
 by the Postfix server after the messages are queued
-* simple
 
 Cons:
 
@@ -57,12 +55,9 @@ Cons:
 ### Authentication
 Using Authlogic gem for password and session management.
 
-### Nested attributes
-
 ## Tests
 Using rspec.
-
-My rspec skills are unfortuntely still weak, so I couldn't go too far.
+More work would be needed on those tests.
 
 To run the tests
 

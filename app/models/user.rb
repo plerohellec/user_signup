@@ -14,10 +14,11 @@ class User < ActiveRecord::Base
   validates :password_salt,     :presence => true, :if => :has_password?
   validates :persistence_token, :presence => true, :if => :has_password?
 
-  validates :first_name, :presence => true, :on => :update_for_register
-  validates :last_name,  :presence => true, :on => :update_for_register
+  validates :first_name, :presence => true, :on => :update
+  validates :last_name,  :presence => true, :on => :update
   validates :password,   :confirmation => true,
-                         :length => { :minimum => 6, :maximum => 20 }
+                         :length => { :minimum => 6, :maximum => 20 },
+                         :on => :update
 
   # plug authlogic in
   acts_as_authentic do |c|

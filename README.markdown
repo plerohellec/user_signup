@@ -54,6 +54,11 @@ Using Authlogic gem for password and session management.
 
 ### Nested attributes
 
+## Configuration
+The application configuration file is at config/initializers/app_config.rb.
+
+The HOSTNAME config parameter MUST be updated for your environment. It's the hostname that will appear in the URL in the confirmation email.
+
 ## Tests
 Using rspec.
 

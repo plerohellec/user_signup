@@ -10,14 +10,15 @@ class User < ActiveRecord::Base
 #                     :presence => true,
 #                     :uniqueness => { :case_sensitive => false }
 
-  validates_length_of     :uuid, :is => 16
+  validates_length_of     :uuid, :is => UUID_LEN
   validates :password_salt,     :presence => true, :if => :has_password?
   validates :persistence_token, :presence => true, :if => :has_password?
 
   validates :first_name, :presence => true, :on => :update_for_register
   validates :last_name,  :presence => true, :on => :update_for_register
   validates :password,   :confirmation => true,
-                         :length => { :minimum => 6, :maximum => 20 }
+                         :length => { :minimum => 6, :maximum => 20 },
+                         :allow_nil => true
 
   # plug authlogic in
   acts_as_authentic do |c|
@@ -30,10 +31,22 @@ class User < ActiveRecord::Base
     self.uuid = (0..UUID_LEN-1).collect { chars[Kernel.rand(chars.length)] }.join
   end
 
+  # Registration/confirmation email using ActiveMailer
+  def send_confirmation_email
+    begin
+      UserMailer.registration_email(self).deliver
+    rescue Exception => e
+      logger.error "Mail delivery failed: #{e}"
+      return false
+    end
+    return true
+  end
+
   # This methods relies on sendmail or postfix being setup on localhost
   # and being configured to deliver emails to the internet.
   # Will return true for success, false otherwise.
-  def send_confirmation_email
+  # NOT ACTUALLY USED.
+  def send_confirmation_email_fork
 
     # we may get a command not found exception here
     begin
@@ -89,8 +102,6 @@ CONF_MAIL
   def has_password?
     !self.crypted_password.blank?
   end
-
-  private
 
   def confirmation_url
     "http://#{HOSTNAME}/users/register/#{self.uuid}"

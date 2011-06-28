@@ -63,8 +63,8 @@ class UsersController < ApplicationController
 
     # if the user is already registered, we should ask the user to authenticate
     if @user.is_registered?
-      flash[:notice] = "You're already registered. Please login."
-      redirect_to new_user_session_path
+      flash[:notice] = "You're already registered. Please sign in."
+      redirect_to root_path
       return
     end
 
@@ -112,8 +112,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     if @user.update_attributes(params[:user])
-      redirect_to(edit_user_path, :notice => 'User was successfully updated.')
+      redirect_to(root_path, :notice => 'User was successfully updated.')
     else
+      @jobs = @user.jobs
+      @jobs.size.upto 6 do
+        @jobs << Job.new
+      end
       render :action => "edit"
     end
   end
